@@ -1,0 +1,42 @@
+.app {
+
+  max-width: 800px;
+
+  margin: 0 auto;
+
+  padding: 40px;
+
+  font-family: Arial, sans-serif;
+
+}
+
+
+h1 {
+
+  font-size: 48px;
+
+}
+
+
+.upload-box,
+.result-box,
+.visual-box {
+
+  margin-top: 30px;
+
+  padding: 25px;
+
+  border-radius: 12px;
+
+  border: 1px solid #ddd;
+
+}
+
+
+input {
+
+  margin-top: 20px;
+
+  font-size: 16px;
+
+}
