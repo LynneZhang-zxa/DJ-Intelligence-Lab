@@ -138,7 +138,11 @@ function App() {
 
         <p>
           BPM:
-          -
+          {" "}
+          {Number.isFinite(result?.bpm)
+            ? result.bpm.toFixed(1)
+            : "-"
+          }
         </p>
 
 

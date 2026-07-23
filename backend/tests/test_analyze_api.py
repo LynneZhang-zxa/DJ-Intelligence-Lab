@@ -10,6 +10,7 @@ from api.analyze import analyze_audio
 
 
 class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
+    @patch("api.analyze.estimate_bpm")
     @patch("api.analyze.compute_spectrogram")
     @patch("api.analyze.downsample_waveform")
     @patch("api.analyze.load_audio")
@@ -18,11 +19,13 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         mock_load_audio,
         mock_downsample_waveform,
         mock_compute_spectrogram,
+        mock_estimate_bpm,
     ):
         audio = np.array([0.25, -0.5, 0.75, -1.0])
         waveform = np.array([0.75, -1.0])
         mock_load_audio.return_value = (audio, 4)
         mock_downsample_waveform.return_value = waveform
+        mock_estimate_bpm.return_value = 128.25
         mock_compute_spectrogram.return_value = {
             "values": np.array([
                 [-80.0, -40.4],
@@ -52,6 +55,7 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["duration"], 1.0)
         self.assertEqual(result["sample_rate"], 4)
         self.assertEqual(result["waveform"], waveform.tolist())
+        self.assertEqual(result["bpm"], 128.25)
         self.assertEqual(
             result["spectrogram"]["values"],
             [[-80, -40], [-21, 0]],
@@ -67,7 +71,9 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
 
         mock_downsample_waveform.assert_called_once_with(audio)
         mock_compute_spectrogram.assert_called_once_with(audio, 4)
+        mock_estimate_bpm.assert_called_once_with(audio, 4)
 
+    @patch("api.analyze.estimate_bpm")
     @patch("api.analyze.compute_spectrogram")
     @patch("api.analyze.downsample_waveform")
     @patch("api.analyze.load_audio")
@@ -76,9 +82,11 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         mock_load_audio,
         mock_downsample_waveform,
         mock_compute_spectrogram,
+        mock_estimate_bpm,
     ):
         mock_load_audio.return_value = (np.array([]), 44100)
         mock_downsample_waveform.return_value = np.array([])
+        mock_estimate_bpm.return_value = None
         mock_compute_spectrogram.return_value = {
             "values": np.empty((0, 0)),
             "orientation": "frequency_time",
@@ -102,6 +110,7 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
 
         json.dumps(result)
         self.assertEqual(result["spectrogram"]["values"], [])
+        self.assertIsNone(result["bpm"])
 
 
 if __name__ == "__main__":
