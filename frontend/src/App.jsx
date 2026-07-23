@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import Spectrogram from "./components/Spectrogram";
 import Waveform from "./components/Waveform";
 
 function App() {
@@ -172,10 +173,12 @@ function App() {
         )}
 
 
-        <p>
-          Spectrogram:
-          Coming soon
-        </p>
+        {result && (
+          <Spectrogram
+            spectrogram={result.spectrogram}
+            duration={result.duration}
+          />
+        )}
 
 
       </div>
