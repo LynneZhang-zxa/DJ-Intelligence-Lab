@@ -41,5 +41,5 @@ async def analyze_audio(
         "filename": file.filename,
         "duration": duration,
         "sample_rate": sr,
-        "waveform": waveform[:1000].tolist()
+        "waveform": waveform.tolist()
     }

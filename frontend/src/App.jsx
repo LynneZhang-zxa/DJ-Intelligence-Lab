@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import Waveform from "./components/Waveform";
 
 function App() {
 
@@ -158,14 +159,17 @@ function App() {
           Visualization
         </h2>
 
-
-        <p>
-          Waveform:
-          {result
-            ? " Available"
-            : " Coming soon"
-          }
-        </p>
+        {result ? (
+          <Waveform
+            samples={result.waveform}
+            duration={result.duration}
+          />
+        ) : (
+          <p>
+            Waveform:
+            Coming soon
+          </p>
+        )}
 
 
         <p>
