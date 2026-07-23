@@ -3,10 +3,12 @@ import os
 
 from fastapi import APIRouter, UploadFile, File
 
+from audio.key import estimate_key
 from audio.loader import load_audio
 from audio.processor import downsample_waveform
 from audio.spectrogram import compute_spectrogram
 from audio.tempo import estimate_bpm
+from database.history import save_analysis
 
 
 router = APIRouter()
@@ -36,6 +38,8 @@ async def analyze_audio(
 
     bpm = estimate_bpm(audio, sr)
 
+    key = estimate_key(audio, sr)
+
     spectrogram_response = {
         **spectrogram,
         "values": spectrogram["values"].round().astype("int8").tolist()
@@ -47,6 +51,15 @@ async def analyze_audio(
 
     os.remove(file_path)
 
+    save_analysis(
+        filename=file.filename,
+        duration=duration,
+        sample_rate=sr,
+        bpm=bpm,
+        key=key["key"] if key else None,
+        mode=key["mode"] if key else None,
+    )
+
 
     return {
         "filename": file.filename,
@@ -54,5 +67,6 @@ async def analyze_audio(
         "sample_rate": sr,
         "waveform": waveform.tolist(),
         "spectrogram": spectrogram_response,
-        "bpm": bpm
+        "bpm": bpm,
+        "key": key
     }

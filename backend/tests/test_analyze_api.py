@@ -10,6 +10,8 @@ from api.analyze import analyze_audio
 
 
 class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
+    @patch("api.analyze.save_analysis")
+    @patch("api.analyze.estimate_key")
     @patch("api.analyze.estimate_bpm")
     @patch("api.analyze.compute_spectrogram")
     @patch("api.analyze.downsample_waveform")
@@ -20,12 +22,18 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         mock_downsample_waveform,
         mock_compute_spectrogram,
         mock_estimate_bpm,
+        mock_estimate_key,
+        mock_save_analysis,
     ):
         audio = np.array([0.25, -0.5, 0.75, -1.0])
         waveform = np.array([0.75, -1.0])
         mock_load_audio.return_value = (audio, 4)
         mock_downsample_waveform.return_value = waveform
         mock_estimate_bpm.return_value = 128.25
+        mock_estimate_key.return_value = {
+            "key": "C",
+            "mode": "major",
+        }
         mock_compute_spectrogram.return_value = {
             "values": np.array([
                 [-80.0, -40.4],
@@ -57,6 +65,10 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["waveform"], waveform.tolist())
         self.assertEqual(result["bpm"], 128.25)
         self.assertEqual(
+            result["key"],
+            {"key": "C", "mode": "major"},
+        )
+        self.assertEqual(
             result["spectrogram"]["values"],
             [[-80, -40], [-21, 0]],
         )
@@ -72,7 +84,18 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         mock_downsample_waveform.assert_called_once_with(audio)
         mock_compute_spectrogram.assert_called_once_with(audio, 4)
         mock_estimate_bpm.assert_called_once_with(audio, 4)
+        mock_estimate_key.assert_called_once_with(audio, 4)
+        mock_save_analysis.assert_called_once_with(
+            filename="api-test.wav",
+            duration=1.0,
+            sample_rate=4,
+            bpm=128.25,
+            key="C",
+            mode="major",
+        )
 
+    @patch("api.analyze.save_analysis")
+    @patch("api.analyze.estimate_key")
     @patch("api.analyze.estimate_bpm")
     @patch("api.analyze.compute_spectrogram")
     @patch("api.analyze.downsample_waveform")
@@ -83,10 +106,13 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         mock_downsample_waveform,
         mock_compute_spectrogram,
         mock_estimate_bpm,
+        mock_estimate_key,
+        mock_save_analysis,
     ):
         mock_load_audio.return_value = (np.array([]), 44100)
         mock_downsample_waveform.return_value = np.array([])
         mock_estimate_bpm.return_value = None
+        mock_estimate_key.return_value = None
         mock_compute_spectrogram.return_value = {
             "values": np.empty((0, 0)),
             "orientation": "frequency_time",
@@ -111,6 +137,15 @@ class AnalyzeApiTests(unittest.IsolatedAsyncioTestCase):
         json.dumps(result)
         self.assertEqual(result["spectrogram"]["values"], [])
         self.assertIsNone(result["bpm"])
+        self.assertIsNone(result["key"])
+        mock_save_analysis.assert_called_once_with(
+            filename="empty.wav",
+            duration=0.0,
+            sample_rate=44100,
+            bpm=None,
+            key=None,
+            mode=None,
+        )
 
 
 if __name__ == "__main__":

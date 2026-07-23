@@ -1,0 +1,220 @@
+.playlist-page-header {
+  align-items: center;
+}
+
+.playlist-create-panel,
+.playlists-panel,
+.playlist-detail-panel {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-card);
+}
+
+.playlist-create-panel {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) minmax(400px, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+
+.playlist-create-panel h2,
+.playlist-create-panel p {
+  margin: 0;
+}
+
+.playlist-create-panel h2 {
+  font-size: 14px;
+}
+
+.playlist-create-panel p {
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.playlist-create-panel form {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(180px, 1fr) auto;
+  gap: 9px;
+}
+
+.playlist-create-panel input,
+.playlist-picker select {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  color: var(--text);
+  background: var(--card);
+  font: inherit;
+  font-size: 11px;
+}
+
+.playlist-create-panel input:focus,
+.playlist-picker select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(112, 141, 168, 0.12);
+}
+
+.playlists-panel,
+.playlist-detail-panel {
+  margin-top: 14px;
+}
+
+.playlist-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.playlist-card {
+  display: grid;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.playlist-card:hover,
+.playlist-card.selected {
+  border-color: var(--accent-pink);
+  transform: translateY(-1px);
+}
+
+.playlist-card-art {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 11px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--accent-pink);
+  background: rgba(239, 199, 210, 0.28);
+  font-size: 20px;
+}
+
+.playlist-card strong,
+.playlist-card small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playlist-card strong {
+  font-size: 12px;
+}
+
+.playlist-card small {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 9px;
+}
+
+.playlist-empty {
+  display: grid;
+  min-height: 150px;
+  place-items: center;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.playlist-empty.compact {
+  min-height: 90px;
+}
+
+.playlist-detail-panel .panel-header p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.playlist-detail-list {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.playlist-detail-list article {
+  display: grid;
+  grid-template-columns: 24px 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.playlist-detail-list article:first-child {
+  border-top: 0;
+}
+
+.playlist-detail-list article > span,
+.playlist-detail-list small {
+  color: var(--text-secondary);
+  font-size: 9px;
+}
+
+.playlist-detail-list img,
+.playlist-track-placeholder {
+  width: 42px;
+  height: 42px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.playlist-track-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  background: var(--light-blue);
+}
+
+.playlist-detail-list article > div:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.playlist-detail-list strong,
+.playlist-detail-list small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .playlist-create-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .playlist-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .playlist-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .playlist-create-panel form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .playlist-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
